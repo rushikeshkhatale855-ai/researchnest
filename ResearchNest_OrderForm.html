@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ResearchNest — Place Your Order</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2444;
+    --navy-mid: #1a3a6b;
+    --teal: #0d7a8a;
+    --teal-light: #14a8bd;
+    --gold: #c9922a;
+    --gold-light: #e8b84b;
+    --cream: #f8f5ef;
+    --white: #ffffff;
+    --gray-light: #f2f4f7;
+    --gray-border: #dde3ee;
+    --gray-mid: #8a9ab5;
+    --text: #1a2640;
+    --text-soft: #4a5a72;
+    --error: #dc3545;
+    --success: #198754;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gray-light);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .page-header {
+    background: var(--navy);
+    padding: 20px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+    border-radius: 9px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; color: white;
+  }
+  .logo-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: white; }
+  .logo-name span { color: var(--gold-light); }
+  .header-badge {
+    background: rgba(13,122,138,0.2); border: 1px solid rgba(13,122,138,0.35);
+    color: var(--teal-light); padding: 5px 14px; border-radius: 100px;
+    font-size: 12px; font-weight: 500;
+  }
+
+  /* ── MAIN ── */
+  .page-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar-wrap {
+    background: white;
+    border-radius: 16px;
+    padding: 24px 32px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 16px rgba(15,36,68,0.06);
+  }
+  .progress-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .ps-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+  }
+  .ps-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    right: -50%;
+    height: 2px;
+    background: var(--gray-border);
+    z-index: 0;
+    transition: background 0.4s;
+  }
+  .ps-item.done:not(:last-child)::after { background: var(--teal); }
+  .ps-dot {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid var(--gray-border);
+    background: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: var(--gray-mid);
+    position: relative; z-index: 1;
+    transition: all 0.3s;
+  }
+  .ps-item.active .ps-dot { border-color: var(--teal); background: var(--teal); color: white; }
+  .ps-item.done .ps-dot { border-color: var(--teal); background: var(--teal); color: white; }
+  .ps-item.done .ps-dot::after { content: '✓'; }
+  .ps-item.done .ps-dot span { display: none; }
+  .ps-label {
+    font-size: 11px; font-weight: 500; color: var(--gray-mid);
+    margin-top: 8px; text-align: center; white-space: nowrap;
+    transition: color 0.3s;
+  }
+  .ps-item.active .ps-label, .ps-item.done .ps-label { color: var(--teal); }
+
+  /* ── CARDS ── */
+  .form-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(15,36,68,0.06);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .card-header {
+    background: var(--navy);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .card-header-icon {
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .card-header-text {}
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 700; color: white;
+  }
+  .card-subtitle { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  .card-body { padding: 32px; }
+
+  /* ── STEPS (pages) ── */
+  .step { display: none; }
+  .step.active { display: block; animation: stepIn 0.4s ease; }
+  @keyframes stepIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+  /* ── FORM ELEMENTS ── */
+  .field-group { margin-bottom: 22px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 22px; }
+  label {
+    display: block; font-size: 13px; font-weight: 600;
+    color: var(--text); margin-bottom: 7px;
+  }
+  label .req { color: var(--teal); margin-left: 3px; }
+  label .hint { font-weight: 400; color: var(--gray-mid); font-size: 12px; margin-left: 6px; }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--gray-border);
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(13,122,138,0.1);
+  }
+  input::placeholder, textarea::placeholder { color: #b0bdd0; }
+  textarea { resize: vertical; min-height: 90px; }
+
+  /* Select arrow */
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--gray-mid); pointer-events: none; font-size: 12px;
+  }
+  .select-wrap select { padding-right: 36px; cursor: pointer; }
+
+  /* Radio / Checkbox tiles */
+  .tile-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .tile-group.cols3 { grid-template-columns: repeat(3, 1fr); }
+  .tile input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tile label {
+    display: flex; align-items: center; gap: 10px;
+    padding: 13px 16px; border: 1.5px solid var(--gray-border);
+    border-radius: 10px; cursor: pointer; margin: 0;
+    font-size: 13.5px; font-weight: 500; color: var(--text-soft);
+    transition: all 0.2s; background: white;
+  }
+  .tile label .tile-icon { font-size: 18px; }
+  .tile input:checked + label {
+    border-color: var(--teal); background: rgba(13,122,138,0.05);
+    color: var(--navy);
+  }
+  .tile label:hover { border-color: var(--teal-light); background: rgba(13,122,138,0.03); }
+
+  /* Service selector */
+  .service-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+  .stile { position: relative; }
+  .stile input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .stile label {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 16px; border: 1.5px solid var(--gray-border);
+    border-radius: 12px; cursor: pointer; margin: 0;
+    transition: all 0.2s; background: white;
+  }
+  .stile-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+  .stile-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .stile-price { font-size: 12px; color: var(--teal); margin-top: 3px; }
+  .stile input:checked + label {
+    border-color: var(--teal); background: rgba(13,122,138,0.05);
+    box-shadow: 0 0 0 1px var(--teal);
+  }
+  .stile label:hover { border-color: var(--teal-light); }
+
+  /* Service-specific fields */
+  .service-fields { display: none; }
+  .service-fields.visible {
+    display: block;
+    animation: stepIn 0.35s ease;
+  }
+  .service-section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 700; color: var(--navy);
+    margin: 28px 0 18px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid var(--gray-border);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  /* Info box */
+  .info-box {
+    background: rgba(13,122,138,0.06);
+    border: 1px solid rgba(13,122,138,0.2);
+    border-left: 4px solid var(--teal);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.6;
+    margin-bottom: 22px;
+  }
+  .info-box strong { color: var(--navy); }
+
+  /* UPI section */
+  .upi-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .upi-tile { position: relative; }
+  .upi-tile input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .upi-tile label {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; padding: 14px 10px; border: 1.5px solid var(--gray-border);
+    border-radius: 10px; cursor: pointer; margin: 0; text-align: center;
+    font-size: 13px; font-weight: 500; color: var(--text-soft);
+    transition: all 0.2s;
+  }
+  .upi-tile label .upi-icon { font-size: 22px; }
+  .upi-tile input:checked + label {
+    border-color: var(--teal); background: rgba(13,122,138,0.05); color: var(--navy);
+  }
+  .upi-tile label:hover { border-color: var(--teal-light); }
+
+  /* Price estimate */
+  .price-estimate {
+    background: var(--navy);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .pe-label { font-size: 13px; color: rgba(255,255,255,0.6); }
+  .pe-value { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--gold-light); }
+  .pe-note { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+  /* Navigation buttons */
+  .form-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--gray-border);
+  }
+  .btn-back {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; border: 1.5px solid var(--gray-border);
+    color: var(--text-soft); padding: 11px 22px; border-radius: 9px;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: var(--navy); color: var(--navy); }
+  .btn-next {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-light));
+    color: white; padding: 12px 28px; border-radius: 9px;
+    font-size: 14px; font-weight: 600; cursor: pointer; border: none;
+    font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 4px 16px rgba(13,122,138,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,122,138,0.4); }
+  .btn-submit {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    box-shadow: 0 4px 16px rgba(201,146,42,0.35);
+    font-size: 15px; padding: 13px 32px;
+  }
+  .btn-submit:hover { box-shadow: 0 6px 22px rgba(201,146,42,0.45); }
+
+  /* Success screen */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 32px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(15,36,68,0.06);
+  }
+  .success-screen.visible { display: block; animation: stepIn 0.5s ease; }
+  .success-icon { font-size: 64px; margin-bottom: 24px; }
+  .success-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px; font-weight: 700; color: var(--navy);
+    margin-bottom: 14px;
+  }
+  .success-sub { font-size: 16px; color: var(--text-soft); line-height: 1.6; max-width: 440px; margin: 0 auto 32px; font-weight: 300; }
+  .summary-box {
+    background: var(--gray-light);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: left;
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+  .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-border); font-size: 14px; }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-label { color: var(--text-soft); font-weight: 500; }
+  .summary-value { color: var(--navy); font-weight: 600; }
+  .success-note { font-size: 13px; color: var(--gray-mid); font-style: italic; }
+
+  /* Validation */
+  .field-error { font-size: 12px; color: var(--error); margin-top: 5px; display: none; }
+  input.invalid, select.invalid, textarea.invalid { border-color: var(--error); }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .field-row { grid-template-columns: 1fr; }
+    .service-tiles { grid-template-columns: 1fr; }
+    .tile-group.cols3 { grid-template-columns: 1fr 1fr; }
+    .upi-options { grid-template-columns: repeat(2, 1fr); }
+    .card-body { padding: 20px; }
+    .price-estimate { flex-direction: column; align-items: flex-start; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <a href="#" class="logo">
+    <div class="logo-mark">RN</div>
+    <div class="logo-name">Research<span>Nest</span></div>
+  </a>
+  <div class="header-badge">Order Form</div>
+</div>
+
+<div class="page-wrap">
+
+  <!-- PROGRESS -->
+  <div class="progress-bar-wrap">
+    <div class="progress-steps">
+      <div class="ps-item active" id="ps1">
+        <div class="ps-dot"><span>1</span></div>
+        <div class="ps-label">Your Details</div>
+      </div>
+      <div class="ps-item" id="ps2">
+        <div class="ps-dot"><span>2</span></div>
+        <div class="ps-label">Service</div>
+      </div>
+      <div class="ps-item" id="ps3">
+        <div class="ps-dot"><span>3</span></div>
+        <div class="ps-label">Requirements</div>
+      </div>
+      <div class="ps-item" id="ps4">
+        <div class="ps-dot"><span>4</span></div>
+        <div class="ps-label">Payment</div>
+      </div>
+      <div class="ps-item" id="ps5">
+        <div class="ps-dot"><span>5</span></div>
+        <div class="ps-label">Confirm</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 1: CLIENT DETAILS -->
+  <div class="step active" id="step1">
+    <div class="form-card">
+      <div class="card-header">
+        <div class="card-header-icon">👤</div>
+        <div class="card-header-text">
+          <div class="card-title">Your Details</div>
+          <div class="card-subtitle">Step 1 of 4 — Tell us about yourself</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="field-row">
+          <div class="field-group">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" id="client_name" placeholder="e.g. Dr. Priya Sharma" />
+            <div class="field-error" id="err_name">Please enter your full name.</div>
+          </div>
+          <div class="field-group">
+            <label>WhatsApp Number <span class="req">*</span></label>
+            <input type="tel" id="client_whatsapp" placeholder="10-digit mobile number" maxlength="10" />
+            <div class="field-error" id="err_whatsapp">Please enter a valid 10-digit number.</div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="client_email" placeholder="yourname@example.com" />
+          <div class="field-error" id="err_email">Please enter a valid email address.</div>
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>College / Institution <span class="req">*</span></label>
+            <input type="text" id="client_college" placeholder="e.g. JIPMER, Manipal College of Pharmacy" />
+            <div class="field-error" id="err_college">Please enter your institution.</div>
+          </div>
+          <div class="field-group">
+            <label>State / City <span class="req">*</span></label>
+            <input type="text" id="client_location" placeholder="e.g. Tamil Nadu, Mumbai" />
+            <div class="field-error" id="err_location">Please enter your state or city.</div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Your Role <span class="req">*</span></label>
+          <div class="tile-group cols3">
+            <div class="tile"><input type="radio" name="role" id="role_ug" value="UG Student"><label for="role_ug"><span class="tile-icon">🎓</span> UG Student</label></div>
+            <div class="tile"><input type="radio" name="role" id="role_pg" value="PG Student"><label for="role_pg"><span class="tile-icon">📖</span> PG Student</label></div>
+            <div class="tile"><input type="radio" name="role" id="role_phd" value="PhD Scholar"><label for="role_phd"><span class="tile-icon">🔬</span> PhD Scholar</label></div>
+            <div class="tile"><input type="radio" name="role" id="role_faculty" value="Faculty"><label for="role_faculty"><span class="tile-icon">👨‍🏫</span> Faculty</label></div>
+            <div class="tile"><input type="radio" name="role" id="role_hcp" value="Healthcare Professional"><label for="role_hcp"><span class="tile-icon">🏥</span> Healthcare Pro</label></div>
+            <div class="tile"><input type="radio" name="role" id="role_other" value="Other"><label for="role_other"><span class="tile-icon">👤</span> Other</label></div>
+          </div>
+          <div class="field-error" id="err_role">Please select your role.</div>
+        </div>
+
+        <div class="form-nav">
+          <div></div>
+          <button class="btn-next" onclick="goStep(2)">Continue →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: SERVICE SELECTION -->
+  <div class="step" id="step2">
+    <div class="form-card">
+      <div class="card-header">
+        <div class="card-header-icon">🗂️</div>
+        <div class="card-header-text">
+          <div class="card-title">Choose Your Service</div>
+          <div class="card-subtitle">Step 2 of 4 — Select the service you need</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="service-tiles">
+          <div class="stile">
+            <input type="radio" name="service" id="svc_review" value="Review Article Writing" onchange="showServiceFields('review')">
+            <label for="svc_review">
+              <div class="stile-icon">📝</div>
+              <div><div class="stile-name">Review Article Writing</div><div class="stile-price">From ₹650 / 5,000 words</div></div>
+            </label>
+          </div>
+          <div class="stile">
+            <input type="radio" name="service" id="svc_plagiarism" value="Plagiarism Checking" onchange="showServiceFields('plagiarism')">
+            <label for="svc_plagiarism">
+              <div class="stile-icon">🔍</div>
+              <div><div class="stile-name">Plagiarism Checking</div><div class="stile-price">From ₹100 / 1,000 words</div></div>
+            </label>
+          </div>
+          <div class="stile">
+            <input type="radio" name="service" id="svc_paraphrase" value="Scientific Paraphrasing" onchange="showServiceFields('paraphrase')">
+            <label for="svc_paraphrase">
+              <div class="stile-icon">✍️</div>
+              <div><div class="stile-name">Scientific Paraphrasing</div><div class="stile-price">From ₹150 / 5,000 words</div></div>
+            </label>
+          </div>
+          <div class="stile">
+            <input type="radio" name="service" id="svc_reference" value="Reference Formatting" onchange="showServiceFields('reference')">
+            <label for="svc_reference">
+              <div class="stile-icon">📚</div>
+              <div><div class="stile-name">Reference Formatting</div><div class="stile-price">From ₹150 (up to 30 refs)</div></div>
+            </label>
+          </div>
+          <div class="stile">
+            <input type="radio" name="service" id="svc_draft" value="Draft & Outline Creation" onchange="showServiceFields('draft')">
+            <label for="svc_draft">
+              <div class="stile-icon">🗂️</div>
+              <div><div class="stile-name">Draft & Outline Creation</div><div class="stile-price">From ₹399</div></div>
+            </label>
+          </div>
+          <div class="stile">
+            <input type="radio" name="service" id="svc_journal" value="Journal Selection (CJAP)" onchange="showServiceFields('journal')">
+            <label for="svc_journal">
+              <div class="stile-icon">🎯</div>
+              <div><div class="stile-name">Journal Selection & Support</div><div class="stile-price">From ₹150 (CJAP)</div></div>
+            </label>
+          </div>
+        </div>
+        <div class="field-error" id="err_service" style="margin-top:-14px;margin-bottom:16px;">Please select a service.</div>
+
+        <div class="form-nav">
+          <button class="btn-back" onclick="goStep(1)">← Back</button>
+          <button class="btn-next" onclick="goStep(3)">Continue →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: SERVICE REQUIREMENTS -->
+  <div class="step" id="step3">
+    <div class="form-card">
+      <div class="card-header">
+        <div class="card-header-icon">📋</div>
+        <div class="card-header-text">
+          <div class="card-title">Order Requirements</div>
+          <div class="card-subtitle">Step 3 of 4 — Provide details for your selected service</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <!-- REVIEW ARTICLE -->
+        <div class="service-fields" id="fields_review">
+          <div class="info-box"><strong>Review Article Writing</strong> — Please provide as much detail as possible. The more context you give, the more accurately we can scope your manuscript.</div>
+          <div class="field-group">
+            <label>Topic / Title of the Review <span class="req">*</span></label>
+            <input type="text" id="rev_topic" placeholder="e.g. Role of nanoparticles in targeted drug delivery" />
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Target Word Count <span class="req">*</span></label>
+              <div class="select-wrap">
+                <select id="rev_wordcount">
+                  <option value="">Select word count</option>
+                  <option>Up to 3,000 words</option>
+                  <option>3,000 – 5,000 words</option>
+                  <option>5,000 – 8,000 words</option>
+                  <option>8,000 – 12,000 words</option>
+                  <option>12,000+ words</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-group">
+              <label>Review Type <span class="req">*</span></label>
+              <div class="select-wrap">
+                <select id="rev_type">
+                  <option value="">Select type</option>
+                  <option>Narrative Review</option>
+                  <option>Systematic Review</option>
+                  <option>Scoping Review</option>
+                  <option>Meta-analysis Support</option>
+                  <option>Mini Review</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Target Journal <span class="hint">(if any)</span></label>
+              <input type="text" id="rev_journal" placeholder="e.g. Drug Delivery, IJPSR" />
+            </div>
+            <div class="field-group">
+              <label>Required Deadline <span class="req">*</span></label>
+              <input type="text" id="rev_deadline" placeholder="e.g. Within 7 days, by 10 March" />
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Urgent Delivery?</label>
+            <div class="tile-group">
+              <div class="tile"><input type="radio" name="rev_urgent" id="rev_urg_no" value="No"><label for="rev_urg_no">No — Standard delivery</label></div>
+              <div class="tile"><input type="radio" name="rev_urgent" id="rev_urg_yes" value="Yes (+30%)"><label for="rev_urg_yes">⚡ Yes — Urgent (+30%)</label></div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Journal Formatting Required?</label>
+            <div class="tile-group">
+              <div class="tile"><input type="radio" name="rev_fmt" id="rev_fmt_no" value="No"><label for="rev_fmt_no">No — General format</label></div>
+              <div class="tile"><input type="radio" name="rev_fmt" id="rev_fmt_yes" value="Yes (+20%)"><label for="rev_fmt_yes">Yes — Journal-specific (+20%)</label></div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Additional Instructions <span class="hint">(optional)</span></label>
+            <textarea id="rev_notes" placeholder="Any specific sections, references to include, language preference, etc."></textarea>
+          </div>
+        </div>
+
+        <!-- PLAGIARISM CHECKING -->
+        <div class="service-fields" id="fields_plagiarism">
+          <div class="info-box"><strong>Plagiarism Checking</strong> — Upload your document after submission via WhatsApp or email. Mention your order ID.</div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Document Word Count <span class="req">*</span></label>
+              <input type="number" id="plag_words" placeholder="e.g. 4500" min="100" />
+            </div>
+            <div class="field-group">
+              <label>Service Tier <span class="req">*</span></label>
+              <div class="select-wrap">
+                <select id="plag_tier">
+                  <option value="">Select tier</option>
+                  <option>Basic — Report only (₹100/1,000 words)</option>
+                  <option>Premium — Report + Correction suggestions (₹250/1,000 words)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Express Delivery?</label>
+            <div class="tile-group">
+              <div class="tile"><input type="radio" name="plag_express" id="plag_exp_no" value="No"><label for="plag_exp_no">No — Standard turnaround</label></div>
+              <div class="tile"><input type="radio" name="plag_express" id="plag_exp_yes" value="Yes (+30%)"><label for="plag_exp_yes">⚡ Yes — Express (+30%)</label></div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Document Type</label>
+            <div class="tile-group cols3">
+              <div class="tile"><input type="radio" name="plag_doctype" id="plag_dt1" value="Research Article"><label for="plag_dt1">Research Article</label></div>
+              <div class="tile"><input type="radio" name="plag_doctype" id="plag_dt2" value="Review Article"><label for="plag_dt2">Review Article</label></div>
+              <div class="tile"><input type="radio" name="plag_doctype" id="plag_dt3" value="Thesis / Dissertation"><label for="plag_dt3">Thesis / Dissertation</label></div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Additional Notes <span class="hint">(optional)</span></label>
+            <textarea id="plag_notes" placeholder="Any specific areas to focus on, language, etc."></textarea>
+          </div>
+        </div>
+
+        <!-- PARAPHRASING -->
+        <div class="service-fields" id="fields_paraphrase">
+          <div class="info-box"><strong>Scientific Paraphrasing</strong> — Share your document after submission. Our expert will improve language while preserving your scientific content.</div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Document Word Count <span class="req">*</span></label>
+              <input type="number" id="para_words" placeholder="e.g. 5000" min="100" />
+            </div>
+            <div class="field-group">
+              <label>Editing Level <span class="req">*</span></label>
+              <div class="select-wrap">
+                <select id="para_level">
+                  <option value="">Select level</option>
+                  <option>Basic — Grammar & clarity (₹150/5,000 words)</option>
+                  <option>Advanced — Structure & tone improvement (₹300/5,000 words)</option>
+                  <option>Expert — Full academic rewrite (₹400/5,000 words)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Subject Area <span class="req">*</span></label>
+            <div class="tile-group cols3">
+              <div class="tile"><input type="radio" name="para_subj" id="para_s1" value="Pharmacy"><label for="para_s1">💊 Pharmacy</label></div>
+              <div class="tile"><input type="radio" name="para_subj" id="para_s2" value="Medicine / Clinical"><label for="para_s2">🏥 Medicine</label></div>
+              <div class="tile"><input type="radio" name="para_subj" id="para_s3" value="Allied Health Sciences"><label for="para_s3">🧬 Allied Health</label></div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Additional Instructions <span class="hint">(optional)</span></label>
+            <textarea id="para_notes" placeholder="Sections to focus on, style guide, target journal, etc."></textarea>
+          </div>
+        </div>
+
+        <!-- REFERENCE FORMATTING -->
+        <div class="service-fields" id="fields_reference">
+          <div class="info-box"><strong>Reference Formatting</strong> — Share your manuscript with existing references. We will reformat them to your selected citation style with DOI validation.</div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Number of References <span class="req">*</span></label>
+              <div class="select-wrap">
+                <select id="ref_count">
+                  <option value="">Select range</option>
+                  <option>Up to 30 references (₹150)</option>
+                  <option>30 – 60 references (₹250)</option>
+                  <option>60+ references (Custom pricing)</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-group">
+              <label>Citation Style <span class="req">*</span></label>
+              <div class="select-wrap">
+                <select id="ref_style">
+                  <option value="">Select style</option>
+                  <option>APA (7th Edition)</option>
+                  <option>Vancouver</option>
+                  <option>MLA (9th Edition)</option>
+                  <option>Harvard</option>
+                  <option>Journal-specific (mention below)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Journal-Specific Formatting Required?</label>
+            <div class="tile-group">
+              <div class="tile"><input type="radio" name="ref_jfmt" id="ref_jfmt_no" value="No"><label for="ref_jfmt_no">No — Standard style</label></div>
+              <div class="tile"><input type="radio" name="ref_jfmt" id="ref_jfmt_yes" value="Yes (+₹380)"><label for="ref_jfmt_yes">Yes — Journal-specific (+₹380)</label></div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Target Journal Name <span class="hint">(if journal formatting selected)</span></label>
+            <input type="text" id="ref_journal" placeholder="e.g. International Journal of Pharmaceutics" />
+          </div>
+          <div class="field-group">
+            <label>Additional Notes <span class="hint">(optional)</span></label>
+            <textarea id="ref_notes" placeholder="Any special formatting instructions, DOI verification needed, etc."></textarea>
+          </div>
+        </div>
+
+        <!-- DRAFT & OUTLINE -->
+        <div class="service-fields" id="fields_draft">
+          <div class="info-box"><strong>Draft & Outline Creation</strong> — We'll create a structured manuscript blueprint delivered as an editable Word document.</div>
+          <div class="field-group">
+            <label>Topic / Working Title <span class="req">*</span></label>
+            <input type="text" id="draft_topic" placeholder="e.g. Pharmacovigilance in rural healthcare settings" />
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Complexity Level <span class="req">*</span></label>
+              <div class="select-wrap">
+                <select id="draft_level">
+                  <option value="">Select level</option>
+                  <option>Standard — Up to 5,000 words (₹399)</option>
+                  <option>Advanced — 5,000–10,000 words (₹499)</option>
+                  <option>Expert / Systematic Review (₹599)</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-group">
+              <label>Document Type</label>
+              <div class="select-wrap">
+                <select id="draft_type">
+                  <option value="">Select type</option>
+                  <option>Review Article</option>
+                  <option>Research Paper</option>
+                  <option>Thesis Chapter</option>
+                  <option>Case Report</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Target Journal / Purpose <span class="hint">(optional)</span></label>
+            <input type="text" id="draft_journal" placeholder="e.g. IJCP, submission to PhD committee" />
+          </div>
+          <div class="field-group">
+            <label>Key Points / Sections to Include <span class="hint">(optional)</span></label>
+            <textarea id="draft_notes" placeholder="Any specific sections, topics, or structure preferences you have in mind"></textarea>
+          </div>
+        </div>
+
+        <!-- JOURNAL SELECTION -->
+        <div class="service-fields" id="fields_journal">
+          <div class="info-box"><strong>Journal Selection & Support (CJAP)</strong> — We'll analyse your manuscript and recommend indexed, peer-reviewed journals matching your scope and impact requirements.</div>
+          <div class="field-group">
+            <label>Manuscript Title / Topic <span class="req">*</span></label>
+            <input type="text" id="jsel_topic" placeholder="e.g. Antidiabetic activity of herbal extract — a clinical study" />
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Service Package <span class="req">*</span></label>
+              <div class="select-wrap">
+                <select id="jsel_package">
+                  <option value="">Select package</option>
+                  <option>Journal Suggestion only (₹150)</option>
+                  <option>Journal Formatting (₹250–₹350)</option>
+                  <option>Revision Support (₹380+)</option>
+                  <option>Full Package — End-to-end (₹650–₹850)</option>
+                </select>
+              </div>
+            </div>
+            <div class="field-group">
+              <label>Preferred Journal Type</label>
+              <div class="select-wrap">
+                <select id="jsel_jtype">
+                  <option value="">Select preference</option>
+                  <option>UGC Care Listed</option>
+                  <option>Scopus Indexed</option>
+                  <option>PubMed Indexed</option>
+                  <option>Open Access</option>
+                  <option>No preference</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Current Status of Manuscript</label>
+            <div class="tile-group cols3">
+              <div class="tile"><input type="radio" name="jsel_status" id="jsel_s1" value="Draft stage"><label for="jsel_s1">Draft Stage</label></div>
+              <div class="tile"><input type="radio" name="jsel_status" id="jsel_s2" value="Ready to submit"><label for="jsel_s2">Ready to Submit</label></div>
+              <div class="tile"><input type="radio" name="jsel_status" id="jsel_s3" value="Under revision"><label for="jsel_s3">Under Revision</label></div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Additional Notes <span class="hint">(optional)</span></label>
+            <textarea id="jsel_notes" placeholder="Budget constraints, preferred publisher, any previously rejected journals, etc."></textarea>
+          </div>
+        </div>
+
+        <!-- No service selected message -->
+        <div id="no_service_msg" style="text-align:center;padding:40px 0;color:var(--gray-mid);">
+          <div style="font-size:40px;margin-bottom:12px;">←</div>
+          <div style="font-size:15px;font-weight:500;">Please go back and select a service first.</div>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-back" onclick="goStep(2)">← Back</button>
+          <button class="btn-next" onclick="goStep(4)">Continue →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: PAYMENT PREFERENCE -->
+  <div class="step" id="step4">
+    <div class="form-card">
+      <div class="card-header">
+        <div class="card-header-icon">💳</div>
+        <div class="card-header-text">
+          <div class="card-title">Payment Preference</div>
+          <div class="card-subtitle">Step 4 of 4 — How would you like to pay?</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="info-box">
+          <strong>How payment works:</strong> After you submit this form, we will confirm your order via WhatsApp and share the exact quote. Payment is made via your preferred method before work begins.
+        </div>
+
+        <div class="field-group">
+          <label>Preferred Payment Method <span class="req">*</span></label>
+          <div class="upi-options">
+            <div class="upi-tile"><input type="radio" name="payment" id="pay_gpay" value="Google Pay"><label for="pay_gpay"><span class="upi-icon">🟢</span>Google Pay</label></div>
+            <div class="upi-tile"><input type="radio" name="payment" id="pay_phonepe" value="PhonePe"><label for="pay_phonepe"><span class="upi-icon">🟣</span>PhonePe</label></div>
+            <div class="upi-tile"><input type="radio" name="payment" id="pay_paytm" value="Paytm"><label for="pay_paytm"><span class="upi-icon">🔵</span>Paytm</label></div>
+            <div class="upi-tile"><input type="radio" name="payment" id="pay_upi" value="UPI (Other)"><label for="pay_upi"><span class="upi-icon">🏦</span>UPI (Other)</label></div>
+            <div class="upi-tile"><input type="radio" name="payment" id="pay_bank" value="Bank Transfer"><label for="pay_bank"><span class="upi-icon">🏛️</span>Bank Transfer</label></div>
+            <div class="upi-tile"><input type="radio" name="payment" id="pay_discuss" value="Discuss later"><label for="pay_discuss"><span class="upi-icon">💬</span>Discuss Later</label></div>
+          </div>
+          <div class="field-error" id="err_payment">Please select a payment preference.</div>
+        </div>
+
+        <div class="field-group" style="margin-top:28px;">
+          <label>Advance Payment Preference</label>
+          <div class="tile-group">
+            <div class="tile"><input type="radio" name="advance" id="adv_full" value="Full payment upfront"><label for="adv_full">Full payment upfront</label></div>
+            <div class="tile"><input type="radio" name="advance" id="adv_half" value="50% advance, 50% on delivery"><label for="adv_half">50% advance, 50% on delivery</label></div>
+          </div>
+        </div>
+
+        <div class="price-estimate">
+          <div>
+            <div class="pe-label">Estimated Quote</div>
+            <div class="pe-value" id="price_display">To be confirmed</div>
+            <div class="pe-note">Exact quote sent via WhatsApp after submission</div>
+          </div>
+          <div style="color:rgba(255,255,255,0.4);font-size:28px;">₹</div>
+        </div>
+
+        <div class="form-nav">
+          <button class="btn-back" onclick="goStep(3)">← Back</button>
+          <button class="btn-next btn-submit" onclick="submitForm()">Submit Order ✓</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="success">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">Order Submitted!</div>
+    <p class="success-sub">Thank you! We've received your order request. Our team will contact you on WhatsApp within 2–4 hours with your quote and next steps.</p>
+    <div class="summary-box">
+      <div class="summary-row"><div class="summary-label">Name</div><div class="summary-value" id="sum_name">—</div></div>
+      <div class="summary-row"><div class="summary-label">Service</div><div class="summary-value" id="sum_service">—</div></div>
+      <div class="summary-row"><div class="summary-label">WhatsApp</div><div class="summary-value" id="sum_whatsapp">—</div></div>
+      <div class="summary-row"><div class="summary-label">Payment</div><div class="summary-value" id="sum_payment">—</div></div>
+      <div class="summary-row"><div class="summary-label">Order ID</div><div class="summary-value" id="sum_orderid">—</div></div>
+    </div>
+    <p class="success-note">Please save your Order ID for reference. A confirmation will be sent to your email.</p>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+  let currentStep = 1;
+  let selectedService = '';
+
+  function updateProgress(step) {
+    for (let i = 1; i <= 5; i++) {
+      const el = document.getElementById('ps' + i);
+      el.classList.remove('active', 'done');
+      if (i < step) el.classList.add('done');
+      if (i === step) el.classList.add('active');
+    }
+  }
+
+  function goStep(n) {
+    // Validate current step before proceeding
+    if (n > currentStep && !validateStep(currentStep)) return;
+
+    document.getElementById('step' + currentStep).classList.remove('active');
+    currentStep = n;
+    document.getElementById('step' + currentStep).classList.add('active');
+    updateProgress(n === 5 ? 5 : n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Update price estimate when reaching payment step
+    if (n === 4) updatePriceEstimate();
+  }
+
+  function validateStep(step) {
+    let valid = true;
+
+    if (step === 1) {
+      const name = document.getElementById('client_name');
+      const email = document.getElementById('client_email');
+      const wa = document.getElementById('client_whatsapp');
+      const college = document.getElementById('client_college');
+      const loc = document.getElementById('client_location');
+      const role = document.querySelector('input[name="role"]:checked');
+
+      if (!name.value.trim()) { showErr(name, 'err_name'); valid = false; } else clearErr(name, 'err_name');
+      if (!email.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) { showErr(email, 'err_email'); valid = false; } else clearErr(email, 'err_email');
+      if (!wa.value.match(/^\d{10}$/)) { showErr(wa, 'err_whatsapp'); valid = false; } else clearErr(wa, 'err_whatsapp');
+      if (!college.value.trim()) { showErr(college, 'err_college'); valid = false; } else clearErr(college, 'err_college');
+      if (!loc.value.trim()) { showErr(loc, 'err_location'); valid = false; } else clearErr(loc, 'err_location');
+      if (!role) { document.getElementById('err_role').style.display = 'block'; valid = false; } else document.getElementById('err_role').style.display = 'none';
+    }
+
+    if (step === 2) {
+      const svc = document.querySelector('input[name="service"]:checked');
+      if (!svc) { document.getElementById('err_service').style.display = 'block'; valid = false; }
+      else document.getElementById('err_service').style.display = 'none';
+    }
+
+    if (step === 4) {
+      const pay = document.querySelector('input[name="payment"]:checked');
+      if (!pay) { document.getElementById('err_payment').style.display = 'block'; valid = false; }
+      else document.getElementById('err_payment').style.display = 'none';
+    }
+
+    return valid;
+  }
+
+  function showErr(el, errId) {
+    el.classList.add('invalid');
+    document.getElementById(errId).style.display = 'block';
+  }
+  function clearErr(el, errId) {
+    el.classList.remove('invalid');
+    document.getElementById(errId).style.display = 'none';
+  }
+
+  function showServiceFields(type) {
+    selectedService = type;
+    document.querySelectorAll('.service-fields').forEach(f => f.classList.remove('visible'));
+    document.getElementById('no_service_msg').style.display = 'none';
+    const target = document.getElementById('fields_' + type);
+    if (target) target.classList.add('visible');
+  }
+
+  function updatePriceEstimate() {
+    const svc = document.querySelector('input[name="service"]:checked');
+    if (!svc) return;
+
+    const priceMap = {
+      'Review Article Writing': '₹650+ / 5,000 words',
+      'Plagiarism Checking': '₹100–₹250 / 1,000 words',
+      'Scientific Paraphrasing': '₹150–₹400 / 5,000 words',
+      'Reference Formatting': '₹150 – Custom',
+      'Draft & Outline Creation': '₹399–₹599',
+      'Journal Selection (CJAP)': '₹150–₹850'
+    };
+
+    document.getElementById('price_display').textContent = priceMap[svc.value] || 'To be confirmed';
+  }
+
+  function generateOrderId() {
+    return 'RN-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substr(2,4).toUpperCase();
+  }
+
+  function submitForm() {
+    if (!validateStep(4)) return;
+
+    const orderId = generateOrderId();
+    const svc = document.querySelector('input[name="service"]:checked');
+    const pay = document.querySelector('input[name="payment"]:checked');
+
+    document.getElementById('sum_name').textContent = document.getElementById('client_name').value;
+    document.getElementById('sum_service').textContent = svc ? svc.value : '—';
+    document.getElementById('sum_whatsapp').textContent = '+91 ' + document.getElementById('client_whatsapp').value;
+    document.getElementById('sum_payment').textContent = pay ? pay.value : '—';
+    document.getElementById('sum_orderid').textContent = orderId;
+
+    // Hide all steps, show success
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById('progress-bar-wrap') && (document.querySelector('.progress-bar-wrap').style.display = 'none');
+    document.getElementById('success').classList.add('visible');
+
+    updateProgress(5);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Show "no service" message on step 3 if nothing selected
+  document.getElementById('step2') && document.querySelectorAll('input[name="service"]').forEach(r => {
+    r.addEventListener('change', () => {
+      document.getElementById('no_service_msg').style.display = 'none';
+    });
+  });
+
+  // Init
+  document.getElementById('no_service_msg').style.display = 'block';
+</script>
+
+</body>
+</html>
